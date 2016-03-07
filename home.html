@@ -2,8 +2,8 @@
 <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
 <script src="https://cdn.firebase.com/js/client/2.4.1/firebase.js"></script>
 <script src="https://cdn.firebase.com/libs/angularfire/1.1.3/angularfire.min.js"></script>
-<script src="scripts/loginRedirectController.js"></script>
-<script src="scripts/contentController.js"></script>
+<script src="controllers/loginRedirectController.js"></script>
+<script src="controllers/contentController.js"></script>
 <head>
     <title>Snowman Home</title>
 </head>
@@ -13,31 +13,12 @@
         <h1>Welcome {{ userEmail }} - {{ role }}</h1>
         <button ng-click="logout()">logout</button>
     </div>
-    <div ng-if="role == 'admin' || role == 'user'">
-        <form novalidate>
-            **User Service Name:<br>
-            <input type="text" ng-model="service_name">
-            <button ng-click="submit()">create</button>
-        </form>
-    </div>
-    <div ng-if="role == 'admin' || role == 'provider'">
-        <h3>**Provider Pending Requests (no provider yet)</h3>
-        <ul>
-            <li ng-repeat="obj in service_request_data | filter:{ provider: 'n/a'}">{{ obj.name }}</li>
-        </ul>
-    </div>
-    <div ng-if="role == 'admin'">
-        <h3>**Admin Incomplete Jobs</h3>
-        <ul>
-            <li ng-repeat="obj in service_request_data | filter:{ completed: false, provider: '!n/a'}">{{ obj.name }} ({{ obj.provider}})</li>
-        </ul>
-    </div>
-    <div>
-        <h3>Completed Jobs</h3>
-        <ul>
-            <li ng-repeat="obj in service_request_data | filter:{ completed: true}">{{ obj.name }} ({{ obj.provider}})</li>
-        </ul>
-    </div>
+    <iframe ng-if="role == 'user'" frameborder="0" style="overflow:hidden; 
+         display:block; position: absolute; height: 100%; width: 100%" src="user.html"></iframe>
+    <iframe ng-if="role == 'provider'" frameborder="0" style="overflow:hidden; 
+         display:block; position: absolute; height: 100%; width: 100%" src="provider.html"></iframe>
+    <iframe ng-if="role == 'admin'" frameborder="0" style="overflow:hidden; 
+         display:block; position: absolute; height: 100%; width: 100%" src="admin.html"></iframe>
 </div>
 </body>
 </html>
