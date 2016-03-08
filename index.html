@@ -21,11 +21,11 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 		<link href='http://fonts.googleapis.com/css?family=Open+Sans:600italic,400,300,600,700' rel='stylesheet' type='text/css'>
 		<!--//webfonts-->
 </head>
-<body>
+<body ng-app="indexApp">
 	
 				 <!-----start-main---->
 				<div class="login-form">
-				<form ng-app="myApp" ng-controller="formCtrl">
+				<form ng-controller="indexController">
 				<img src="images/ilash_logo.png" alt=""/><br/>&nbsp;
 					<li>
 						<input type="text" class="text" ng-model="username" onfocus="this.value = '';" onblur="if (this.value == '') {this.value = 'USERNAME';}" ><a href="#" class=" icon user"></a>

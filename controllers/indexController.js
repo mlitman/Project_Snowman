@@ -1,9 +1,9 @@
-var app = angular.module('myApp', ["firebase"]);
-app.controller('formCtrl', function($scope) 
+var app = angular.module('indexApp', ["firebase"]);
+app.controller('indexController', function($scope) 
 {
-    console.log("HERE");
     $scope.login = function() 
     {
+        $scope.test = "Index Controller";
         var ref = new Firebase("https://project-snowman.firebaseio.com/");
         console.log($scope.username);
         ref.authWithPassword({
