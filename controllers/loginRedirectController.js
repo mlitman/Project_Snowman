@@ -1,4 +1,4 @@
-var app = angular.module('indexApp', ["firebase"]);
+var app = angular.module('indexApp');
 app.controller('loginRedirect', function($scope, $firebaseArray) 
 {
 	var ref = new Firebase("https://project-snowman.firebaseio.com/");

@@ -1,9 +1,9 @@
-var app = angular.module('indexApp', ["firebase"]);
+var app = angular.module('snowmanApp');
 app.controller('contentController', function($scope, $firebaseArray) 
 {
     var ref = new Firebase("https://project-snowman.firebaseio.com/");
     var authData = ref.getAuth();
-    $scope.role = null;
+    $scope.role = "null";
     $scope.pageMode = "NORMAL";
     $scope.fname = "Bob";
     if(authData)
