@@ -1,0 +1,129 @@
+<!--
+Author: W3layouts
+Author URL: http://w3layouts.com
+License: Creative Commons Attribution 3.0 Unported
+License URL: http://creativecommons.org/licenses/by/3.0/
+-->
+<!DOCTYPE html>
+<html>
+<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+<script src="https://cdn.firebase.com/js/client/2.4.1/firebase.js"></script>
+<script src="https://cdn.firebase.com/libs/angularfire/1.1.3/angularfire.min.js"></script>
+<script src="controllers/indexController.js"></script>
+<script src="controllers/userController.js"></script>
+<script src="https://checkout.stripe.com/checkout.js"></script>
+
+<head>
+	<title>Snowman Home</title>
+		<meta charset="utf-8">
+		<link href="css/style.css" rel='stylesheet' type='text/css' />
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
+		<!--webfonts-->
+		<link href='http://fonts.googleapis.com/css?family=Open+Sans:600italic,400,300,600,700' rel='stylesheet' type='text/css'>
+		<!--//webfonts-->
+</head>
+<body ng-app="snowmanApp" ng-controller="indexController">
+	<div ng-if="isAuthenticated == false" class="login-form">
+		<form>
+		<img src="images/ilash_logo.png" alt=""/><br/>&nbsp;
+			<li>
+				<input type="text" class="text" ng-model="username" onfocus="this.value = '';" onblur="if (this.value == '') {this.value = 'USERNAME';}" ><a href="#" class=" icon user"></a>
+			</li>
+			<li>
+				<input type="password" ng-model="password" onfocus="this.value = '';" onblur="if (this.value == '') {this.value = 'Password';}"><a href="#" class=" icon lock"></a>
+			</li>
+			<div align="center">
+			<input type="submit" ng-click="login()" value="SIGN IN">
+			</div>
+		</form>
+	</div>
+	<div ng-if="isAuthenticated == true">
+		<h1>Welcome {{ userEmail }} - {{ role }}</h1>
+		<button ng-click="logout()">logout</button>
+		
+		<div ng-if="role == 'user'" ng-controller="userController">
+		<script>
+		  var handler = StripeCheckout.configure({
+		    key: 'pk_test_zlIlMao9i1p5xMkfkmFMOalp',
+		    image: '/img/documentation/checkout/marketplace.png',
+		    locale: 'auto',
+		    token: function(token) 
+		    {
+            	$.post( "http://localhost:3000/checkout", { stripeToken: token.id, amount: 2000 }, function(result)
+            	{
+        			console.log(result);
+    			});
+            	
+		      // Use the token to create the charge with a server-side script.
+		      // You can access the token ID with `token.id`
+		    }
+		  });
+
+		  $('#customButton').on('click', function(e) 
+		  {
+		    // Open Checkout with further options
+		    handler.open({
+		      name: 'Demo Site',
+		      description: '2 widgets',
+		      amount: 2000
+		    });
+		    e.preventDefault();
+		  });
+
+		  // Close Checkout on page navigation
+		  $(window).on('popstate', function() {
+		    handler.close();
+		  });
+		</script>
+			<table width="100%">
+				<tr>
+				  <td width="50%">
+					<form novalidate>
+						<h2>Service Type</h2>
+					   	<button ng-click="snowRemovalButtonOnClick()">Snow Removal</button>
+					   	<button ng-click="lawnMowingButtonOnClick()">Lawn Mowing</button><br/>
+						<div ng-if="serviceType == 'snow'">
+							<h1>Snow Removal</h1>
+							<h1>Current Cost: {{costPerUnit * snow_numberOfCars}}</h1>
+							<input type="text" ng-model="snow_numberOfCars" style="border: 2px solid #ccc;" width="100%" placeholder="Number of Cars">
+							
+ 							<input type="text" ng-model="snow_instructions" style="border: 2px solid #ccc;" width="100%" placeholder="Special Instructions">
+						</div>
+						<div ng-if="serviceType == 'lawn'">
+							<h1>Lawn Mowing</h1>
+							<h1>Current Cost: {{costPerUnit * lawn_numberOfCars}}</h1>
+							<input type="text" ng-model="lawn_numberOfCars" style="border: 2px solid #ccc;" width="100%" placeholder="Number of Cars LOL">
+							<input type="text" ng-model="lawn_instructions" style="border: 2px solid #ccc;" width="100%" placeholder="Special Instructions">
+						</div>
+		        
+	            	</form>
+	            	<button id="customButton">Purchase</button>
+				  </td>
+				  <td width="50%">
+				  	<h3>Pending Requests (no provider yet)</h3>
+            		<ul>
+                		<li ng-repeat="obj in service_request_data | filter:{ provider: 'n/a'}">{{ obj.name }}</li>
+            		</ul>
+				  </td>
+			  	</tr>
+				<tr>
+				  <td width="50%">
+				  	<h3>Incomplete Jobs</h3>
+	              	<ul>
+	                	<li ng-repeat="obj in service_request_data | filter:{ completed: false, provider: '!n/a'}">{{ obj.name }} ({{ obj.provider}})</li>
+	            	</ul>
+				  </td>
+				  <td width="50%">
+				  	<h3>Completed Jobs</h3>
+	            	<ul>
+	                	<li ng-repeat="obj in service_request_data | filter:{ completed: true}">{{ obj.name }} ({{ obj.provider}})</li>
+	            	</ul>
+				  </td>
+				</tr>
+			</table>
+	    </div>
+	</div>
+</body>
+</html>
