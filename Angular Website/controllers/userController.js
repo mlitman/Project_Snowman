@@ -3,10 +3,20 @@ app.controller('userController', function($scope, $firebaseArray)
 {
     var ref = new Firebase("https://project-snowman.firebaseio.com/");
     var authData = ref.getAuth();
-    $scope.serviceType = "snow";
-    $scope.costPerUnit = 10;
-    $scope.lawn_numberOfCars = 0;
-    $scope.snow_numberOfCars = 0;
+    
+    $scope.changeLawn = function() 
+    {
+        console.log("change lawn");
+        console.log(this.lawn_numberOfCars);
+        $scope.lawn_numberOfCars = this.lawn_numberOfCars;
+    };
+
+    $scope.changeSnow = function() 
+    {
+        console.log("change snow");
+        console.log(this.snow_numberOfCars);
+        $scope.snow_numberOfCars = this.snow_numberOfCars;
+    };
 
     //get the data for our pending service requests
     var service_requests = ref.child("service_requests");
@@ -36,13 +46,15 @@ app.controller('userController', function($scope, $firebaseArray)
 
     $scope.snowRemovalButtonOnClick = function()
     {
-        $scope.serviceType = "snow";
-        $scope.costPerUnit = 10;
+        this.serviceType = "snow";
+        this.costPerUnit = 10;
+        this.snow_numberOfCars = 0;
     }
 
     $scope.lawnMowingButtonOnClick = function()
     {
-        $scope.serviceType = "lawn";
-        $scope.costPerUnit = 8;
+        this.serviceType = "lawn";
+        this.costPerUnit = 8;
+        this.lawn_numberOfCars = 0;
     }
 });
