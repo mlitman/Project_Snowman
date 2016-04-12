@@ -52,9 +52,38 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 		    locale: 'auto',
 		    token: function(token) 
 		    {
-            	$.post( "http://localhost:3000/checkout", { stripeToken: token.id, amount: 2000 }, function(result)
+		    	var scope = angular.element(document.getElementById("main")).scope();
+			  	scope = scope.$$childHead;
+			  	var numberOfCars = 0;
+			  	var instructions = "";
+			  	if(scope.serviceType == 'snow')
+			  	{
+			  		numberOfCars = scope.snow_numberOfCars;
+			  		instructions = scope.snow_instructions;
+			  	}
+			  	else
+			  	{
+			  		numberOfCars = scope.lawn_numberOfCars;
+			  		instructions = scope.lawn_instructions;
+			  	}
+			  	var cost = scope.costPerUnit * numberOfCars * 100;
+		    	console.log(cost);
+            	$.post( "http://localhost:3000/checkout", { stripeToken: token.id, amount: cost }, function(result)
             	{
         			console.log(result);
+        			if(result == 'success')
+        			{
+        				//reset form
+        				console.log("in reset");
+        				scope.reset();
+
+        				//save to firebase
+        				scope.newServiceRequest(scope.serviceType, numberOfCars, instructions, cost);
+        			}
+        			else
+        			{
+        				console.log("blah");
+        			}
     			});
             	
 		      // Use the token to create the charge with a server-side script.
@@ -66,7 +95,6 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 		  {
 		  	var scope = angular.element(document.getElementById("main")).scope();
 		  	scope = scope.$$childHead;
-		  	scope.$apply();
 		  	var numberOfCars = 0;
 		  	if(scope.serviceType == 'snow')
 		  	{
@@ -76,10 +104,6 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 		  	{
 		  		numberOfCars = scope.lawn_numberOfCars;
 		  	}
-		  	console.log(scope.serviceType);
-		  	console.log(scope.snow_numberOfCars);
-		  	console.log(scope.lawn_numberOfCars);
-		  	console.log(scope.costPerUnit);
 		  	var cost = scope.costPerUnit * numberOfCars * 100;
 		    // Open Checkout with further options
 		    handler.open({
@@ -106,15 +130,19 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 							<h1>Current Cost: {{costPerUnit * snow_numberOfCars}}</h1>
 							<input type="text" ng-change="changeSnow()" ng-model="snow_numberOfCars" style="border: 2px solid #ccc;" width="100%" placeholder="Number of Cars">
 							
- 							<input type="text" ng-model="snow_instructions" style="border: 2px solid #ccc;" width="100%" placeholder="Special Instructions">
+ 							<input type="text" ng-change="changeSnow()" ng-model="snow_instructions" style="border: 2px solid #ccc;" width="100%" placeholder="Special Instructions">
+ 							<br/>
+ 							<button ng-if="snow_numberOfCars > 0" onclick="purchaseButtonPressed()">Purchase</button>
 						</div>
 						<div ng-if="serviceType == 'lawn'">
 							<h1>Lawn Mowing</h1>
 							<h1>Current Cost: {{costPerUnit * lawn_numberOfCars}}</h1>
 							<input type="text" ng-change="changeLawn()" ng-model="lawn_numberOfCars" style="border: 2px solid #ccc;" width="100%" placeholder="Number of Cars LOL">
-							<input type="text" ng-model="lawn_instructions" style="border: 2px solid #ccc;" width="100%" placeholder="Special Instructions">
+							<input type="text" ng-change="changeLawn()" ng-model="lawn_instructions" style="border: 2px solid #ccc;" width="100%" placeholder="Special Instructions">
+							<br/>
+ 							<button ng-if="lawn_numberOfCars > 0" onclick="purchaseButtonPressed()">Purchase</button>
 						</div>
-		        		<button onclick="purchaseButtonPressed()">Purchase</button>
+		        		
 	            	</form>
 	            	
 				  </td>
