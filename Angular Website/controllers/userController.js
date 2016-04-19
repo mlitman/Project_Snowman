@@ -33,6 +33,9 @@ app.controller('userController', function($scope, $firebaseArray)
 
     $scope.newServiceRequest = function(type, size, instructions, cost)
     {
+        console.log("type: " + type);
+        console.log("cost: " + cost);
+        console.log("size: " + size);
         //save the new service request to firebase
         service_requests.push({user: authData.uid, name: type, type: type, instructions: instructions, cost: cost, size: size, provider: "n/a", completed: false});
     }
